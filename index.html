@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Carbon Emission Tracker</title>
+<title>Carbon Emission tracker</title>
 
 <style>
 body{
@@ -153,7 +153,15 @@ let records = JSON.parse(localStorage.getItem("carbonData")) || [];
 
 records.push(data);
 
+if(window.db){
+window.addDoc(
+window.collection(window.db, "submission"),
+data
+);
+}
+
 localStorage.setItem("carbonData", JSON.stringify(records));
+
 
 alert("Data Submitted Successfully!");
 
@@ -162,9 +170,50 @@ document.getElementById("carbonForm").reset();
 });
 
 </script>
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAsnuw7ElsaGbH7owOtHnv6uEDVk0kKY0g",
+  authDomain: "carbon-emission-tracker-39876.firebaseapp.com",
+  projectId: "carbon-emission-tracker-39876",
+  storageBucket: "carbon-emission-tracker-39876.firebasestorage.app",
+  messagingSenderId: "1004239040954",
+  appId: "1:1004239040954:web:573f4f0b617304f0d36d83",
+  measurementId: "G-N8RT9092TX"
+};
 
 <script type="module">
-console.log("Firebase Test");
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+
+import {
+  getFirestore,
+  collection,
+  addDoc
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAsnuw7ElsaGbH7owOtHnv6uEDVk0kKY0g",
+  authDomain: "carbon-emission-tracker-39876.firebaseapp.com",
+  projectId: "carbon-emission-tracker-39876",
+  storageBucket: "carbon-emission-tracker-39876.firebasestorage.app",
+  messagingSenderId: "1004239040954",
+  appId: "1:1004239040954:web:573f4f0b617304f0d36d83",
+  measurementId: "G-N8RT9092TX"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+window.db = db;
+window.addDoc = addDoc;
+window.collection = collection;
+
+alert("Firebase Connected Successfully");
+
 </script>
 
 </body>

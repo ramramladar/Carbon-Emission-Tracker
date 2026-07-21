@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Carbon Emission Tracker</title>
+
+<style>
+body{
+font-family:Arial,sans-serif;
+background:#dff6ff;
+margin:0;
+padding:0;
+}
+
+.container{
+width:90%;
+max-width:1000px;
+margin:30px auto;
+}
+
+h1{
+text-align:center;
+color:#003366;
+margin-bottom:30px;
+}
+
+form{
+background:white;
+padding:30px;
+border-radius:15px;
+box-shadow:0 0 15px rgba(0,0,0,0.1);
+}
+
+.row{
+display:flex;
+gap:30px;
+}
+
+.column{
+flex:1;
+}
+
+label{
+font-weight:bold;
+}
+
+input,select{
+width:95%;
+padding:10px;
+margin-top:5px;
+margin-bottom:20px;
+}
+
+button{
+background:green;
+color:white;
+border:none;
+padding:12px 20px;
+font-size:16px;
+cursor:pointer;
+border-radius:5px;
+margin-right:10px;
+}
+
+button:hover{
+background:darkgreen;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🌍 Carbon Emission Tracker</h1>
+
+<form id="carbonForm">
+
+<div class="row">
+
+<div class="column">
+
+<label>Company Name:</label><br>
+<input type="text" id="companyName" placeholder="Enter Company Name" required><br>
+
+<label>Company Type:</label><br>
+<select id="companyType">
+<option>Manufacturing</option>
+<option>IT Company</option>
+<option>Transport</option>
+<option>Retail</option>
+<option>Construction</option>
+<option>Energy</option>
+<option>Healthcare</option>
+<option>Education</option>
+</select><br>
+
+<label>Email:</label><br>
+<input type="email" id="email" placeholder="Enter Email Address" required><br>
+
+<label>Electricity Used (kWh):</label><br>
+<input type="number" id="electricity" placeholder="Enter Electricity Used"><br>
+
+<label>Diesel Used (Liters):</label><br>
+<input type="number" id="diesel" placeholder="Enter Diesel Used"><br>
+
+<label>Petrol Used (Liters):</label><br>
+<input type="number" id="petrol" placeholder="Enter Petrol Used"><br>
+
+</div>
+
+<div class="column">
+
+<label>Electricity Bill PDF:</label><br>
+<input type="file" accept=".pdf"><br>
+
+<label>Diesel Bill PDF:</label><br>
+<input type="file" accept=".pdf"><br>
+
+<label>Petrol Bill PDF:</label><br>
+<input type="file" accept=".pdf"><br>
+
+</div>
+
+</div>
+
+<button type="submit">Submit Data</button>
+
+<a href="admin.html">
+<button type="button">Open Admin Panel</button>
+</a>
+
+</form>
+
+</div>
+
+<script>
+
+document.getElementById("carbonForm").addEventListener("submit", function(e){
+
+e.preventDefault();
+
+let data = {
+companyName: document.getElementById("companyName").value,
+companyType: document.getElementById("companyType").value,
+email: document.getElementById("email").value,
+electricity: document.getElementById("electricity").value,
+diesel: document.getElementById("diesel").value,
+petrol: document.getElementById("petrol").value
+};
+
+let records = JSON.parse(localStorage.getItem("carbonData")) || [];
+
+records.push(data);
+
+localStorage.setItem("carbonData", JSON.stringify(records));
+
+alert("Data Submitted Successfully!");
+
+document.getElementById("carbonForm").reset();
+
+});
+
+</script>
+
+</body>
+</html>

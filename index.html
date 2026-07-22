@@ -169,11 +169,15 @@ document.getElementById("carbonForm").reset();
 
 });
 
-</script>
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+import {
+  getFirestore,
+  collection,
+  addDoc
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAsnuw7ElsaGbH7owOtHnv6uEDVk0kKY0g",
@@ -184,8 +188,8 @@ const firebaseConfig = {
   appId: "1:1004239040954:web:573f4f0b617304f0d36d83",
   measurementId: "G-N8RT9092TX"
 };
-  
- const app = initializeApp(firebaseConfig);
+
+const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 window.db = db;
@@ -198,3 +202,7 @@ console.log("Firebase Connected Successfully");
 
 </body>
 </html>
+
+
+
+</script>

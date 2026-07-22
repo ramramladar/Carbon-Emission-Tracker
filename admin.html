@@ -1,237 +1,116 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Carbon Emission Tracker - Admin Dashboard</title>
+<title>Admin Login</title>
 
 <style>
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial,sans-serif;
-}
-
 body{
-display:flex;
-background:#f4f6f9;
+    font-family:Arial;
+    background:#dff6ff;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
 }
 
-.sidebar{
-width:250px;
-height:100vh;
-background:#1e293b;
-color:white;
-padding:20px;
+.box{
+    background:white;
+    padding:30px;
+    width:300px;
+    border-radius:10px;
+    box-shadow:0 0 10px gray;
+    text-align:center;
 }
 
-.sidebar h2{
-text-align:center;
-margin-bottom:30px;
+input{
+    width:90%;
+    padding:10px;
+    margin:10px;
 }
 
-.main{
-flex:1;
-padding:20px;
-}
-
-.header{
-background:white;
-padding:20px;
-border-radius:10px;
-box-shadow:0 2px 5px rgba(0,0,0,0.1);
-margin-bottom:20px;
-}
-
-.dashboard{
-display:flex;
-gap:20px;
-margin-bottom:20px;
-}
-
-.card{
-background:white;
-padding:20px;
-border-radius:10px;
-box-shadow:0 2px 5px rgba(0,0,0,0.1);
-flex:1;
-text-align:center;
-}
-
-.card h3{
-color:#2563eb;
-margin-bottom:10px;
-}
-
-.card p{
-font-size:28px;
-font-weight:bold;
-}
-
-table{
-width:100%;
-background:white;
-border-collapse:collapse;
-border-radius:10px;
-overflow:hidden;
-}
-
-th,td{
-padding:12px;
-border-bottom:1px solid #ddd;
-text-align:left;
-}
-
-th{
-background:#2563eb;
-color:white;
-}
-
-tr:hover{
-background:#f1f5f9;
+button{
+    background:#003366;
+    color:white;
+    padding:10px 30px;
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
 }
 </style>
+
 </head>
 
 <body>
 
-<div class="sidebar">
-<h2>Admin Panel</h2>
-</div>
+<div class="box">
 
-<div class="main">
+<h2>Admin Login</h2>
 
-<div class="header">
-<h1>🌍 Carbon Emission Tracker</h1>
-<p>Admin Dashboard</p>
-</div>
+<input id="email" type="email" placeholder="Email">
 
-<div class="dashboard">
+<input id="password" type="password" placeholder="Password">
 
-<div class="card">
-<h3>Total Records</h3>
-<p id="totalRecords">0</p>
-</div>
-
-<div class="card">
-<h3>Total Electricity</h3>
-<p id="totalElectricity">0</p>
-</div>
-
-<div class="card">
-<h3>Total Carbon (kg CO₂)</h3>
-<p id="totalCarbon">0</p>
-</div>
+<button onclick="login()">Login</button>
 
 </div>
 
-<table>
-
-<thead>
-<tr>
-<th>Company</th>
-<th>Type</th>
-<th>Email</th>
-<th>Electricity</th>
-<th>Diesel</th>
-<th>Petrol</th>
-<th>Carbon Emission</th>
-<th>Date</th>
-</tr>
-</thead>
-
-<tbody id="dataTable">
-</tbody>
-
-</table>
-
-</div>
 
 <script type="module">
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+import { initializeApp } 
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-import {
-getFirestore,
-collection,
-getDocs
-} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword } 
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
+
+// Yaha apna Firebase Config paste karna
 const firebaseConfig = {
-apiKey: "AIzaSyAsnuw7ElsaGbH7owOtHnv6uEDVk0kKY0g",
-authDomain: "carbon-emission-tracker-39876.firebaseapp.com",
-projectId: "carbon-emission-tracker-39876",
-storageBucket: "carbon-emission-tracker-39876.firebasestorage.app",
-messagingSenderId: "1004239040954",
-appId: "1:1004239040954:web:573f4f0b617304f0d36d83",
-measurementId: "G-N8RT9092TX"
+
+apiKey: "YOUR_API_KEY",
+authDomain: "YOUR_PROJECT.firebaseapp.com",
+projectId: "YOUR_PROJECT_ID",
+storageBucket: "YOUR_BUCKET",
+messagingSenderId: "YOUR_ID",
+appId: "YOUR_APP_ID"
+
 };
 
+
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
 
-const table = document.getElementById("dataTable");
+const auth = getAuth(app);
 
-async function loadData(){
 
-try{
 
-const querySnapshot = await getDocs(collection(db,"submission"));
+window.login = function(){
 
-let count = 0;
-let totalElectricity = 0;
-let totalCarbon = 0;
+let email=document.getElementById("email").value;
 
-querySnapshot.forEach((doc)=>{
+let password=document.getElementById("password").value;
 
-count++;
 
-const item = doc.data();
+signInWithEmailAndPassword(auth,email,password)
 
-const carbon =
-(Number(item.electricity || 0) * 0.82) +
-(Number(item.diesel || 0) * 2.68) +
-(Number(item.petrol || 0) * 2.31);
+.then(()=>{
 
-totalElectricity += Number(item.electricity || 0);
-totalCarbon += carbon;
+alert("Login Successful");
 
-table.innerHTML += `
-<tr>
-<td>${item.companyName || ""}</td>
-<td>${item.companyType || ""}</td>
-<td>${item.email || ""}</td>
-<td>${item.electricity || 0}</td>
-<td>${item.diesel || 0}</td>
-<td>${item.petrol || 0}</td>
-<td>${carbon.toFixed(2)} kg CO₂</td>
-<td>${item.submittedAt ? new Date(item.submittedAt).toLocaleString() : ""}</td>
-</tr>
-`;
+window.location.href="admin.html";
+
+})
+
+.catch((error)=>{
+
+alert("Wrong Email or Password");
 
 });
 
-document.getElementById("totalRecords").innerText = count;
-document.getElementById("totalElectricity").innerText = totalElectricity.toFixed(2);
-document.getElementById("totalCarbon").innerText = totalCarbon.toFixed(2);
-
-if(count === 0){
-table.innerHTML =
-'<tr><td colspan="8">No Records Found</td></tr>';
-}
 
 }
-catch(error){
-
-console.error(error);
-alert("Error Loading Data: " + error.message);
-
-}
-
-}
-
-loadData();
 
 </script>
+
 
 </body>
 </html>

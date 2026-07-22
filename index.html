@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Carbon Emission tracker</title>
+<title>Carbon Emission Tracker</title>
 
 <style>
 body{
@@ -65,7 +65,6 @@ button:hover{
 background:darkgreen;
 }
 </style>
-
 </head>
 
 <body>
@@ -126,120 +125,86 @@ background:darkgreen;
 
 <button type="submit">Submit Data</button>
 
-<a href="admin.html">
-<button type="button">Open Admin Panel</button>
-</a>
+<button type="button" onclick="location.href='admin.html'">
+Open Admin Panel
+</button>
 
 </form>
 
 </div>
 
-<script>
-
-document.getElementById("carbonForm").addEventListener("submit", function(e){
-
-e.preventDefault();
-
-let data = {
-companyName: document.getElementById("companyName").value,
-companyType: document.getElementById("companyType").value,
-email: document.getElementById("email").value,
-electricity: document.getElementById("electricity").value,
-diesel: document.getElementById("diesel").value,
-petrol: document.getElementById("petrol").value
-};
-
-let records = JSON.parse(localStorage.getItem("carbonData")) || [];
-
-records.push(data);
-
-if(window.db){
-window.addDoc(
-window.collection(window.db, "submission"),
-data
-);
-}
-
-localStorage.setItem("carbonData", JSON.stringify(records));
-
-
-alert("Data Submitted Successfully!");
-
-document.getElementById("carbonForm").reset();
-
-});
-
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+
 import {
-  getFirestore,
-  collection,
-  addDoc
+getFirestore,
+collection,
+addDoc
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAsnuw7ElsaGbH7owOtHnv6uEDVk0kKY0g",
-  authDomain: "carbon-emission-tracker-39876.firebaseapp.com",
-  projectId: "carbon-emission-tracker-39876",
-  storageBucket: "carbon-emission-tracker-39876.firebasestorage.app",
-  messagingSenderId: "1004239040954",
-  appId: "1:1004239040954:web:573f4f0b617304f0d36d83",
-  measurementId: "G-N8RT9092TX"
+apiKey: "AIzaSyAsnuw7ElsaGbH7owOtHnv6uEDVk0kKY0g",
+authDomain: "carbon-emission-tracker-39876.firebaseapp.com",
+projectId: "carbon-emission-tracker-39876",
+storageBucket: "carbon-emission-tracker-39876.firebasestorage.app",
+messagingSenderId: "1004239040954",
+appId: "1:1004239040954:web:573f4f0b617304f0d36d83",
+measurementId: "G-N8RT9092TX"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-document.getElementById("carbonForm").addEventListener("submit", async function(e) {
+console.log("Firebase Connected Successfully");
 
-  e.preventDefault();
+document.getElementById("carbonForm").addEventListener("submit", async function(e){
 
-  const data = {
-    companyName: document.getElementById("companyName").value,
-    companyType: document.getElementById("companyType").value,
-    email: document.getElementById("email").value,
-    electricity: document.getElementById("electricity").value,
-    diesel: document.getElementById("diesel").value,
-    petrol: document.getElementById("petrol").value,
-    submittedAt: new Date().toISOString()
-  };
+e.preventDefault();
 
-  try {
+const data = {
+companyName: document.getElementById("companyName").value,
+companyType: document.getElementById("companyType").value,
+email: document.getElementById("email").value,
+electricity: document.getElementById("electricity").value,
+diesel: document.getElementById("diesel").value,
+petrol: document.getElementById("petrol").value,
+submittedAt: new Date().toISOString()
+};
 
-    let records =
-      JSON.parse(localStorage.getItem("carbonData")) || [];
+try{
 
-    records.push(data);
+let records =
+JSON.parse(localStorage.getItem("carbonData")) || [];
 
-    localStorage.setItem(
-      "carbonData",
-      JSON.stringify(records)
-    );
+records.push(data);
 
-    await addDoc(
-      collection(db, "submission"),
-      data
-    );
+localStorage.setItem(
+"carbonData",
+JSON.stringify(records)
+);
 
-    alert("Data Submitted Successfully!");
+await addDoc(
+collection(db, "submission"),
+data
+);
 
-    document.getElementById("carbonForm").reset();
+alert("Data Submitted Successfully!");
 
-  } catch (error) {
+document.getElementById("carbonForm").reset();
 
-    console.error(error);
+}
+catch(error){
 
-    alert("Error: " + error.message);
+console.error(error);
 
-  }
+alert("Error: " + error.message);
+
+}
 
 });
-
-console.log("Firebase Connected Successfully");
 
 </script>
 
 </body>
 </html>
-

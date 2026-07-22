@@ -134,6 +134,7 @@ background:#f1f5f9;
 <th>Electricity</th>
 <th>Diesel</th>
 <th>Petrol</th>
+<th>Carbon Emission</th>
 <th>Date</th>
 </tr>
 </thead>
@@ -147,15 +148,13 @@ background:#f1f5f9;
 
 <script type="module">
 
-import { initializeApp }
-from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 
 import {
 getFirestore,
 collection,
 getDocs
-}
-from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
 const firebaseConfig = {
 apiKey: "AIzaSyAsnuw7ElsaGbH7owOtHnv6uEDVk0kKY0g",
@@ -176,8 +175,7 @@ async function loadData(){
 
 try{
 
-const querySnapshot =
-await getDocs(collection(db,"submission"));
+const querySnapshot = await getDocs(collection(db,"submission"));
 
 let count = 0;
 let totalElectricity = 0;
@@ -189,13 +187,12 @@ count++;
 
 const item = doc.data();
 
-totalElectricity += Number(item.electricity || 0);
-
-let carbon =
+const carbon =
 (Number(item.electricity || 0) * 0.82) +
 (Number(item.diesel || 0) * 2.68) +
 (Number(item.petrol || 0) * 2.31);
 
+totalElectricity += Number(item.electricity || 0);
 totalCarbon += carbon;
 
 table.innerHTML += `
@@ -206,19 +203,21 @@ table.innerHTML += `
 <td>${item.electricity || 0}</td>
 <td>${item.diesel || 0}</td>
 <td>${item.petrol || 0}</td>
-<td>${item.submittedAt || ""}</td>
+<td>${carbon.toFixed(2)} kg CO₂</td>
+<td>${item.submittedAt ? new Date(item.submittedAt).toLocaleString() : ""}</td>
 </tr>
 `;
 
 });
 
 document.getElementById("totalRecords").innerText = count;
+document.getElementById("totalElectricity").innerText = totalElectricity.toFixed(2);
+document.getElementById("totalCarbon").innerText = totalCarbon.toFixed(2);
 
-document.getElementById("totalElectricity").innerText =
-totalElectricity.toFixed(2);
-
-document.getElementById("totalCarbon").innerText =
-totalCarbon.toFixed(2);
+if(count === 0){
+table.innerHTML =
+'<tr><td colspan="8">No Records Found</td></tr>';
+}
 
 }
 catch(error){

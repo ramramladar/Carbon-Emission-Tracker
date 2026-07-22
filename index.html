@@ -172,7 +172,6 @@ document.getElementById("carbonForm").reset();
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-
 import {
   getFirestore,
   collection,
@@ -192,9 +191,50 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-window.db = db;
-window.addDoc = addDoc;
-window.collection = collection;
+document.getElementById("carbonForm").addEventListener("submit", async function(e) {
+
+  e.preventDefault();
+
+  const data = {
+    companyName: document.getElementById("companyName").value,
+    companyType: document.getElementById("companyType").value,
+    email: document.getElementById("email").value,
+    electricity: document.getElementById("electricity").value,
+    diesel: document.getElementById("diesel").value,
+    petrol: document.getElementById("petrol").value,
+    submittedAt: new Date().toISOString()
+  };
+
+  try {
+
+    let records =
+      JSON.parse(localStorage.getItem("carbonData")) || [];
+
+    records.push(data);
+
+    localStorage.setItem(
+      "carbonData",
+      JSON.stringify(records)
+    );
+
+    await addDoc(
+      collection(db, "submission"),
+      data
+    );
+
+    alert("Data Submitted Successfully!");
+
+    document.getElementById("carbonForm").reset();
+
+  } catch (error) {
+
+    console.error(error);
+
+    alert("Error: " + error.message);
+
+  }
+
+});
 
 console.log("Firebase Connected Successfully");
 
@@ -202,3 +242,4 @@ console.log("Firebase Connected Successfully");
 
 </body>
 </html>
+

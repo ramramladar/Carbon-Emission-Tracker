@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Admin Dashboard</title>
+<title>Carbon Emission Tracker - Admin Dashboard</title>
 
 <style>
 *{
@@ -42,6 +42,31 @@ box-shadow:0 2px 5px rgba(0,0,0,0.1);
 margin-bottom:20px;
 }
 
+.dashboard{
+display:flex;
+gap:20px;
+margin-bottom:20px;
+}
+
+.card{
+background:white;
+padding:20px;
+border-radius:10px;
+box-shadow:0 2px 5px rgba(0,0,0,0.1);
+flex:1;
+text-align:center;
+}
+
+.card h3{
+color:#2563eb;
+margin-bottom:10px;
+}
+
+.card p{
+font-size:28px;
+font-weight:bold;
+}
+
 table{
 width:100%;
 background:white;
@@ -61,13 +86,8 @@ background:#2563eb;
 color:white;
 }
 
-.stats{
-background:white;
-padding:15px;
-margin-bottom:20px;
-border-radius:10px;
-font-size:20px;
-font-weight:bold;
+tr:hover{
+background:#f1f5f9;
 }
 </style>
 </head>
@@ -81,12 +101,27 @@ font-weight:bold;
 <div class="main">
 
 <div class="header">
-<h1>Carbon Emission Tracker Admin</h1>
-<p>Submitted Records</p>
+<h1>🌍 Carbon Emission Tracker</h1>
+<p>Admin Dashboard</p>
 </div>
 
-<div class="stats">
-Total Records: <span id="totalRecords">0</span>
+<div class="dashboard">
+
+<div class="card">
+<h3>Total Records</h3>
+<p id="totalRecords">0</p>
+</div>
+
+<div class="card">
+<h3>Total Electricity</h3>
+<p id="totalElectricity">0</p>
+</div>
+
+<div class="card">
+<h3>Total Carbon (kg CO₂)</h3>
+<p id="totalCarbon">0</p>
+</div>
+
 </div>
 
 <table>
@@ -145,6 +180,8 @@ const querySnapshot =
 await getDocs(collection(db,"submission"));
 
 let count = 0;
+let totalElectricity = 0;
+let totalCarbon = 0;
 
 querySnapshot.forEach((doc)=>{
 
@@ -152,14 +189,23 @@ count++;
 
 const item = doc.data();
 
+totalElectricity += Number(item.electricity || 0);
+
+let carbon =
+(Number(item.electricity || 0) * 0.82) +
+(Number(item.diesel || 0) * 2.68) +
+(Number(item.petrol || 0) * 2.31);
+
+totalCarbon += carbon;
+
 table.innerHTML += `
 <tr>
 <td>${item.companyName || ""}</td>
 <td>${item.companyType || ""}</td>
 <td>${item.email || ""}</td>
-<td>${item.electricity || ""}</td>
-<td>${item.diesel || ""}</td>
-<td>${item.petrol || ""}</td>
+<td>${item.electricity || 0}</td>
+<td>${item.diesel || 0}</td>
+<td>${item.petrol || 0}</td>
 <td>${item.submittedAt || ""}</td>
 </tr>
 `;
@@ -168,11 +214,17 @@ table.innerHTML += `
 
 document.getElementById("totalRecords").innerText = count;
 
+document.getElementById("totalElectricity").innerText =
+totalElectricity.toFixed(2);
+
+document.getElementById("totalCarbon").innerText =
+totalCarbon.toFixed(2);
+
 }
 catch(error){
 
 console.error(error);
-alert("Error Loading Data");
+alert("Error Loading Data: " + error.message);
 
 }
 

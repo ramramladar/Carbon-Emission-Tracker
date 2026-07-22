@@ -60,8 +60,16 @@ th{
 background:#2563eb;
 color:white;
 }
-</style>
 
+.stats{
+background:white;
+padding:15px;
+margin-bottom:20px;
+border-radius:10px;
+font-size:20px;
+font-weight:bold;
+}
+</style>
 </head>
 
 <body>
@@ -77,6 +85,10 @@ color:white;
 <p>Submitted Records</p>
 </div>
 
+<div class="stats">
+Total Records: <span id="totalRecords">0</span>
+</div>
+
 <table>
 
 <thead>
@@ -87,6 +99,7 @@ color:white;
 <th>Electricity</th>
 <th>Diesel</th>
 <th>Petrol</th>
+<th>Date</th>
 </tr>
 </thead>
 
@@ -97,26 +110,75 @@ color:white;
 
 </div>
 
-<script>
+<script type="module">
 
-let records = JSON.parse(localStorage.getItem("carbonData")) || [];
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 
-let table = document.getElementById("dataTable");
+import {
+getFirestore,
+collection,
+getDocs
+}
+from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
-records.forEach(function(item){
+const firebaseConfig = {
+apiKey: "AIzaSyAsnuw7ElsaGbH7owOtHnv6uEDVk0kKY0g",
+authDomain: "carbon-emission-tracker-39876.firebaseapp.com",
+projectId: "carbon-emission-tracker-39876",
+storageBucket: "carbon-emission-tracker-39876.firebasestorage.app",
+messagingSenderId: "1004239040954",
+appId: "1:1004239040954:web:573f4f0b617304f0d36d83",
+measurementId: "G-N8RT9092TX"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const table = document.getElementById("dataTable");
+
+async function loadData(){
+
+try{
+
+const querySnapshot =
+await getDocs(collection(db,"submission"));
+
+let count = 0;
+
+querySnapshot.forEach((doc)=>{
+
+count++;
+
+const item = doc.data();
 
 table.innerHTML += `
 <tr>
-<td>${item.companyName}</td>
-<td>${item.companyType}</td>
-<td>${item.email}</td>
-<td>${item.electricity}</td>
-<td>${item.diesel}</td>
-<td>${item.petrol}</td>
+<td>${item.companyName || ""}</td>
+<td>${item.companyType || ""}</td>
+<td>${item.email || ""}</td>
+<td>${item.electricity || ""}</td>
+<td>${item.diesel || ""}</td>
+<td>${item.petrol || ""}</td>
+<td>${item.submittedAt || ""}</td>
 </tr>
 `;
 
 });
+
+document.getElementById("totalRecords").innerText = count;
+
+}
+catch(error){
+
+console.error(error);
+alert("Error Loading Data");
+
+}
+
+}
+
+loadData();
 
 </script>
 

@@ -1,114 +1,134 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Admin Login</title>
+<title>Admin Dashboard</title>
 
 <style>
 body{
-    font-family:Arial;
-    background:#dff6ff;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:100vh;
+font-family:Arial,sans-serif;
+background:#f4f6f9;
+padding:20px;
 }
 
-.box{
-    background:white;
-    padding:30px;
-    width:300px;
-    border-radius:10px;
-    box-shadow:0 0 10px gray;
-    text-align:center;
+h1{
+text-align:center;
+color:#003366;
 }
 
-input{
-    width:90%;
-    padding:10px;
-    margin:10px;
+table{
+width:100%;
+border-collapse:collapse;
+background:white;
+margin-top:20px;
 }
 
-button{
-    background:#003366;
-    color:white;
-    padding:10px 30px;
-    border:none;
-    border-radius:5px;
-    cursor:pointer;
+th,td{
+border:1px solid #ddd;
+padding:10px;
+text-align:center;
+}
+
+th{
+background:#003366;
+color:white;
+}
+
+.total{
+background:white;
+padding:15px;
+margin:15px 0;
+border-radius:10px;
+font-size:20px;
+font-weight:bold;
 }
 </style>
-
 </head>
 
 <body>
 
-<div class="box">
+<h1>🌍 Carbon Emission Tracker - Admin Dashboard</h1>
 
-<h2>Admin Login</h2>
-
-<input id="email" type="email" placeholder="Email">
-
-<input id="password" type="password" placeholder="Password">
-
-<button onclick="login()">Login</button>
-
+<div class="total">
+Total Records: <span id="totalRecords">0</span>
 </div>
 
+<table>
+<thead>
+<tr>
+<th>Company</th>
+<th>Type</th>
+<th>Email</th>
+<th>Electricity</th>
+<th>Diesel</th>
+<th>Petrol</th>
+</tr>
+</thead>
+
+<tbody id="tableBody">
+</tbody>
+
+</table>
 
 <script type="module">
 
-import { initializeApp } 
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 
-import { getAuth, signInWithEmailAndPassword } 
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
+import {
+getFirestore,
+collection,
+getDocs
+}
+from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAsnuw7ElsaGbH7owOtHnv6uEDVk0kKY0g",
-  authDomain: "carbon-emission-tracker-39876.firebaseapp.com",
-  projectId: "carbon-emission-tracker-39876",
-  storageBucket: "carbon-emission-tracker-39876.firebasestorage.app",
-  messagingSenderId: "1004239040954",
-  appId: "1:1004239040954:web:573f4f0b617304f0d36d83",
-  measurementId: "G-N8RT9092TX"
+apiKey: "AIzaSyAsnuw7ElsaGbH7owOtHnv6uEDVk0kKY0g",
+authDomain: "carbon-emission-tracker-39876.firebaseapp.com",
+projectId: "carbon-emission-tracker-39876",
+storageBucket: "carbon-emission-tracker-39876.firebasestorage.app",
+messagingSenderId: "1004239040954",
+appId: "1:1004239040954:web:573f4f0b617304f0d36d83",
+measurementId: "G-N8RT9092TX"
 };
 
-
 const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-const auth = getAuth(app);
+async function loadData(){
 
+const querySnapshot =
+await getDocs(collection(db,"submission"));
 
+let table = document.getElementById("tableBody");
 
-window.login = function(){
+let count = 0;
 
-let email=document.getElementById("email").value;
+querySnapshot.forEach((doc)=>{
 
-let password=document.getElementById("password").value;
+let data = doc.data();
 
+count++;
 
-signInWithEmailAndPassword(auth,email,password)
-
-.then(()=>{
-
-alert("Login Successful");
-
-window.location.href="admin.html";
-
-})
-
-.catch((error)=>{
-
-alert("Wrong Email or Password");
+table.innerHTML += `
+<tr>
+<td>${data.companyName || ""}</td>
+<td>${data.companyType || ""}</td>
+<td>${data.email || ""}</td>
+<td>${data.electricity || 0}</td>
+<td>${data.diesel || 0}</td>
+<td>${data.petrol || 0}</td>
+</tr>
+`;
 
 });
 
+document.getElementById("totalRecords").innerText = count;
 
 }
 
-</script>
+loadData();
 
+</script>
 
 </body>
 </html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Admin Login</title>
+</head>
+
+<body style="font-family:Arial;text-align:center;margin-top:100px;">
+
+<h2>Admin Login</h2>
+
+<input type="email" id="email" placeholder="Enter Gmail">
+<br><br>
+
+<input type="password" id="password" placeholder="Enter Password">
+<br><br>
+
+<button onclick="login()">Login</button>
+
+
+<script type="module">
+
+import { initializeApp } 
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import { getAuth, signInWithEmailAndPassword } 
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAsnuw7ElsaGbH7owOtHnv6uEDVk0kKY0g",
+  authDomain: "carbon-emission-tracker-39876.firebaseapp.com",
+  projectId: "carbon-emission-tracker-39876",
+  storageBucket: "carbon-emission-tracker-39876.firebasestorage.app",
+  messagingSenderId: "1004239040954",
+  appId: "1:1004239040954:web:573f4f0b617304f0d36d83",
+  measurementId: "G-N8RT9092TX"
+};
+
+
+const app = initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+
+
+window.login = function(){
+
+let email = document.getElementById("email").value;
+let password = document.getElementById("password").value;
+
+
+signInWithEmailAndPassword(auth,email,password)
+
+.then((userCredential)=>{
+
+alert("Login Successful");
+
+window.location.href="admin.html";
+
+})
+
+.catch((error)=>{
+
+alert(error.message);
+
+});
+
+
+}
+
+</script>
+
+</body>
+</html>

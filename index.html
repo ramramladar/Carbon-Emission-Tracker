@@ -6,7 +6,7 @@
 <style>
 body{
 font-family:Arial,sans-serif;
-background:#dff6ff;
+background:linear-gradient(135deg,#dff6ff,#d9ffe0);
 margin:0;
 padding:0;
 }
@@ -64,16 +64,61 @@ margin-right:10px;
 button:hover{
 background:darkgreen;
 }
+
+.hero{
+text-align:center;
+padding:30px;
+}
+
+.hero p{
+font-size:18px;
+color:#444;
+}
+
+.stats{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+gap:15px;
+margin-bottom:25px;
+}
+
+.card{
+background:white;
+padding:20px;
+border-radius:12px;
+text-align:center;
+font-weight:bold;
+box-shadow:0 5px 15px rgba(0,0,0,0.1);
+}
+
 </style>
 </head>
 
 <body>
 
+<div class="hero">
+<h1>🌍 Carbon Emission Tracker</h1>
+<p>Monitor, Analyze & Reduce Carbon Emissions</p>
+</div>
+
 <div class="container">
 
 <h1>🌍 Carbon Emission Tracker</h1>
 
+<div class="stats">
+
+<div class="card">⚡ Energy Tracking</div>
+
+<div class="card">🚛 Fuel Monitoring</div>
+
+<div class="card">📄 Report Uploads</div>
+
+<div class="card">🌱 Sustainability</div>
+
+</div>
+
 <form id="carbonForm">
+
 
 <div class="row">
 
